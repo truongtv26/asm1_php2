@@ -1,0 +1,11 @@
+#DirectoryIndex index.php
+
+RewriteEngine On
+
+#RewriteBase /
+
+# Điều kiện ReWriteRule
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+
+RewriteRule ^(.+)$ index.php/$1 [L,QSA]
