@@ -51,8 +51,10 @@ class Database
         return $this->query($sql)->fetchAll();
 
     }
-    public function getFieldFromTable($table,$field = '*') {
-        $sql = "SELECT $field FROM $table";
+    public function getFieldFromTable($fetchMode = 0, $table,$field = '*', $condition = 1) {
+        $sql = "SELECT $field FROM $table WHERE $condition";
+        if ($fetchMode == 0)
+            return $this->query($sql)->fetch();
         return $this->query($sql)->fetchAll();
     }
 

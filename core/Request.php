@@ -4,8 +4,10 @@ namespace core;
 
 class Request
 {
-    private $rules = [], $messages = [];
+    private $rules = [], $messages = [], $targetImage, $inputName;
     public $errors;
+
+
     public function getFields() {
         $data = [];
         if ($this->isGet()) {
@@ -18,10 +20,35 @@ class Request
             foreach ($_POST as $key => $value) {
                 $data[$key] = $value;
             }
+
+            if (isset($_FILES)) {
+                foreach ($_FILES as $key => $value) {
+                    if (!empty($value['name'])){
+                        $data[$key] = 'file selected';
+                    }else {
+                        $data[$key] = '';
+                    }
+                }
+            }
         }
 
         return $data;
     }
+
+    public function uploadImage() {
+        $file = $_FILES[$this->inputName];
+        if (!$file['error']) {
+            $target = $this->targetImage . $file['name'];
+            while (file_exists($target)) {
+                $target = $this->targetImage . rand(1000000, 100000000000).".".pathinfo($target,PATHINFO_EXTENSION);
+            }
+            if (move_uploaded_file($file['tmp_name'], $target))
+                return $target;
+        }
+
+        return false;
+    }
+
     public function getMethod():string {
         return strtolower($_SERVER['REQUEST_METHOD']);
     }
@@ -37,13 +64,6 @@ class Request
         return false;
     }
 
-    public function setRules($rules = []) {
-        $this->rules = $rules;
-    }
-
-    public function setMessage($messages = []) {
-        $this->messages = $messages;
-    }
 
     public function isValid() {
         $isValid = true;
@@ -88,26 +108,34 @@ class Request
                         }
                     }
                     if ($ruleName == 'match') {
-                        if (trim($dataFields[$fieldName]) != trim()) {
+                        if (trim($dataFields[$fieldName]) != trim($dataFields[$ruleValue])) {
                             $this->setError($fieldName, $ruleName);
                             $isValid = false;
                         }
                     }
                     if ($ruleName == 'only') {
-                        $valuesExist = Database::$db->getFieldFromTable($ruleValue, $fieldName);
+                        $valuesExist = Database::$db->getFieldFromTable(1,$ruleValue, $fieldName);
 
                         foreach ($valuesExist as $key => $value) {
-                            // kiểm tra sự thay đổi giá trị
-                            if (strcmp($dataFields[$fieldName], $valuesExist[$key][$fieldName]) == 0) {
-                                $this->setError($fieldName, $ruleName);
-                                $isValid = false;
-                            }
-                            // kiểm tra giá trị đã tồn tại
                             if (!strcmp($dataFields[$fieldName], $valuesExist[$key][$fieldName])) {
                                 $this->setError($fieldName, $ruleName);
                                 $isValid = false;
                                 break;
                             }
+                        }
+                    }
+                    if ($ruleName == 'filemin') {
+                        $file = $_FILES[$fieldName];
+                        if ($file['size'] < (1024*1024) * (int)$ruleValue){
+                            $this->setError($fieldName, $ruleName);
+                            $isValid = false;
+                        }
+                    }
+                    if ($ruleName == 'filemax') {
+                        $file = $_FILES[$fieldName];
+                        if ($file['size'] > (1024*1024) * (int)$ruleValue) {
+                            $this->setError($fieldName, $ruleName);
+                            $isValid = false;
                         }
                     }
 
@@ -118,9 +146,26 @@ class Request
         return $isValid;
     }
 
+    public function setRules($rules = []) {
+        $this->rules = $rules;
+    }
+
+    public function setMessage($messages = []) {
+        $this->messages = $messages;
+    }
+
+    public function setTargetImage($target) {
+        $this->targetImage = $target;
+    }
+    public function setInputImage($inputName) {
+        $this->inputName = $inputName;
+    }
+
     public function setError($fieldName, $ruleName) {
+
         if ($this->messages) {
-            $this->errors[$fieldName][$ruleName] = $this->messages[$fieldName . '.' . $ruleName];
+            if (array_key_exists("$fieldName.$ruleName", $this->messages))
+                $this->errors[$fieldName][$ruleName] = $this->messages[$fieldName . '.' . $ruleName];
         }
     }
     public function getError($fieldName = '') {
@@ -137,4 +182,6 @@ class Request
         }
         return false;
     }
+
+
 }

@@ -34,7 +34,8 @@ class Customer extends Controller
         $req->setRules([
             'name' => 'required|min:2|max:20|only:customer',
             'email' => 'required|email',
-            'birthday' => 'required'
+            'birthday' => 'required',
+            'image' => 'required|filemin:1|filemax:2'
         ]);
 
         $req->setMessage([
@@ -44,13 +45,21 @@ class Customer extends Controller
             'name.only' => 'Tên khách hàng đã tồn tại',
             'email.required' => 'Trường này không được để trống',
             'email.email' => 'Định dạng email không hợp lệ',
-            'birthday.required' => 'Trường này không được để trống'
+            'birthday.required' => 'Trường này không được để trống',
+            'image.required' => 'Vui lòng chọn ảnh',
+            'image.filemin' => 'Tối thiểu 1MB',
+            'image.filemax' => 'Tối đa 2MB'
         ]);
+
+        $req->setTargetImage('public/assets/img/profile/');
+        $req->setInputImage('image');
 
         if ($req->isPost()) {
             $isValid = $req->isValid();
             if ($isValid) {
-                $this->model->insertCustomer($req->getFields());
+                $data = $req->getFields();
+                $data['image'] = $req->uploadImage();
+                $this->model->insertCustomer($data);
                 $_SESSION['notify'] = '<span class="text-success">Thêm mới khách hàng thành công</span>';
                 header("location:http://localhost/asm1_php2/customer/list_customer");
             }
@@ -90,10 +99,13 @@ class Customer extends Controller
             'birthday.required' => 'Trường này không được để trống'
         ]);
 
+        $req->setTargetImage('public/assets/img/profile/');
+        $req->setInputImage('image');
+
         if ($req->isPost()) {
 
             $fieldsChange = array_diff_assoc($req->getFields(), $this->model->detailCustomer($id));
-
+            $fieldsChange = array_filter($fieldsChange);
             if ($fieldsChange) {
                 // kiểm tra người dùng cập nhật lại tên
                 if (!empty($fieldsChange['name'])) {
@@ -104,9 +116,10 @@ class Customer extends Controller
                 // validate
                 $isValid = $req->isValid();
                 if ($isValid) {
-                $this->model->updateCustomer($id, $fieldsChange);
-                $_SESSION['notify'] = '<span class="text-success">Cập nhật khách hàng thành công</span>';
-                header("location:http://localhost/asm1_php2/customer/list_customer");
+                    $fieldsChange['image'] = $req->uploadImage();
+                    $this->model->updateCustomer($id, $fieldsChange);
+                    $_SESSION['notify'] = '<span class="text-success">Cập nhật khách hàng thành công</span>';
+                  header("location:http://localhost/asm1_php2/danh-sach-khach-hang");
                 }
             } else {
                 $this->data['message'] = '<span class="text-warning">Thông tin khách hàng không thay đổi</span>';
@@ -125,7 +138,11 @@ class Customer extends Controller
     }
     public function delete($id = 0) {
         if ($id > 0) {
+            $field = 'image';
+            $old_image = $this->model->getFieldFromTable(0, 'customer',$field, "id=$id");
             $this->model->deleteCustomer($id);
+            if (file_exists($old_image[$field]))
+                unlink($old_image[$field]);
             $_SESSION['notify'] = '<span class="text-success">Xóa thành công</span>';
             header("location:http://localhost/asm1_php2/customer/list_customer");
         }

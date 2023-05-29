@@ -5,7 +5,6 @@ namespace core;
 class Router
 {
     private array $routes;
-
     public function __construct()
     {
         global $routes;

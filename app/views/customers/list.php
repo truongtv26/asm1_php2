@@ -10,6 +10,7 @@
                     <tr>
                         <th scope="col">#id</th>
                         <th scope="col">Họ tên</th>
+                        <th scope="col">Ảnh</th>
                         <th scope="col">Ngày sinh</th>
                         <th scope="col">Địa chỉ</th>
                         <th scope="col">Email</th>
@@ -26,6 +27,7 @@
                         <tr>
                             <td><?=$id?></td>
                             <td><?=$name?></td>
+                            <td><img class="rounded-circle" width="50" src="<?=_DIR_ROOT_ . "/".$image?>" alt=""></td>
                             <td class="text-nowrap"><?=$birthday?><br>(<?=$year_old?> tuổi)</td>
                             <td><?=$address?></td>
                             <td><?=$email?></td>

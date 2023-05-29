@@ -7,7 +7,7 @@
                 <h5 class="card-title">Thêm khách hàng</h5>
 
                 <!-- Vertical Form -->
-                <form class="row g-3" method="post">
+                <form class="row g-3" method="post" enctype="multipart/form-data">
                     <div class="col-12">
                         <label for="inputNanme4" class="form-label">Tên khách hàng</label>
                         <input type="text" name="name" class="form-control" id="inputNanme" value="<?=$dataFields['name'] ?? ''?>">
@@ -25,13 +25,18 @@
                     </div>
                     <div class="col-12">
                         <label for="inputAddress" class="form-label">Email</label>
-                        <input type="text" name="email" class="form-control" id="inputAddress" placeholder="" value="<?=$dataFields['email'] ?? ''?>">
+                        <input type="text" name="email" class="form-control" placeholder="" value="<?=$dataFields['email'] ?? ''?>">
                         <span class="text-danger fs-8"><?=$errors['email'] ?? ''?></span>
                     </div>
                     <div class="col-12">
                         <label for="inputAddress" class="form-label">Số điện thoại</label>
-                        <input type="text" name="phone" class="form-control" id="inputAddress" placeholder="" value="<?=$dataFields['phone'] ?? ''?>">
+                        <input type="text" name="phone" class="form-control" placeholder="" value="<?=$dataFields['phone'] ?? ''?>">
                         <span class="text-danger fs-8"><?=$errors['phone'] ?? ''?></span>
+                    </div>
+                    <div class="col-12">
+                        <label for="inputAddress" class="form-label">Ảnh đại diện</label>
+                        <input type="file" name="image" class="form-control" placeholder="" accept="image/*">
+                        <span class="text-danger fs-8"><?=$errors['image'] ?? ''?></span>
                     </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary">Submit</button>

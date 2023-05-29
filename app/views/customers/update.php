@@ -6,7 +6,7 @@
                 <h5 class="card-title">Cập nhật khách hàng</h5>
 
                 <!-- Vertical Form -->
-                <form class="row g-3" method="post">
+                <form class="row g-3" method="post" enctype="multipart/form-data">
                     <div class="col-12">
                         <input type="hidden" name="id" value="<?=$info['id'] ?? 0?>">
                         <label for="inputNanme4" class="form-label">Tên khách hàng</label>
@@ -32,6 +32,11 @@
                         <label for="inputAddress" class="form-label">Số điện thoại</label>
                         <input type="text" name="phone" class="form-control" id="inputAddress" placeholder="" value="<?=$_POST['phone'] ??$info['phone'] ?? ''?>">
                         <span class="text-danger fs-8"><?=$errors['phone'] ?? ''?></span>
+                    </div>
+                    <div class="col-12">
+                        <label for="inputAddress" class="form-label">Ảnh đại diện</label>
+                        <input type="file" name="image" class="form-control" placeholder="" accept="image/*">
+                        <span class="text-danger fs-8"><?=$errors['image'] ?? ''?></span>
                     </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary">Submit</button>
