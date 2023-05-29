@@ -24,7 +24,7 @@
 </head>
 <body>
     <?php
-//    $this->render('partials/header');
+    $this->render('partials/header');
     ?>
     <?php
     $this->render($layout ?? 'customers/list', $main ?? [])

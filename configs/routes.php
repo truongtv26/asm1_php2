@@ -9,3 +9,10 @@ $routes['chi-tiet-khach-hang'] = 'Customer/detail';
 $routes['khach-hang/chi-tiet'] = 'Customer/detail';
 
 /*Product Router*/
+$routes['san-pham'] = 'Product/list_product';
+$routes['danh-sach-san-pham'] = 'Product/list_product';
+$routes['them-san-pham'] = 'Product/add';
+$routes['chi-tiet-san-pham'] = 'Product/detail';
+$routes['cap-nhat-san-pham'] = 'Product/update';
+$routes['xoa-san-pham'] = 'Product/delete';
+

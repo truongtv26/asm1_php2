@@ -66,6 +66,7 @@ class Request
 
     public function isValid() {
         $isValid = true;
+
         if (!empty($this->rules)) {
 
             $dataFields = $this->getFields();
@@ -96,6 +97,12 @@ class Request
                     }
                     if ($ruleName == 'max') {
                         if (strlen(trim($dataFields[$fieldName])) > $ruleValue) {
+                            $this->setError($fieldName, $ruleName);
+                            $isValid = false;
+                        }
+                    }
+                    if ($ruleName == 'number') {
+                        if (!is_numeric($dataFields[$fieldName])) {
                             $this->setError($fieldName, $ruleName);
                             $isValid = false;
                         }
@@ -163,8 +170,10 @@ class Request
     public function setError($fieldName, $ruleName) {
 
         if ($this->messages) {
-            if (array_key_exists("$fieldName.$ruleName", $this->messages))
+            if (array_key_exists("$fieldName.$ruleName", $this->messages)) {
                 $this->errors[$fieldName][$ruleName] = $this->messages[$fieldName . '.' . $ruleName];
+            }
+
         }
     }
     public function getError($fieldName = '') {

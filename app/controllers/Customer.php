@@ -119,7 +119,7 @@ class Customer extends Controller
                     $fieldsChange['image'] = $req->uploadImage();
                     $this->model->updateCustomer($id, $fieldsChange);
                     $_SESSION['notify'] = '<span class="text-success">Cập nhật khách hàng thành công</span>';
-                  header("location:http://localhost/asm1_php2/danh-sach-khach-hang");
+                    header("location:http://localhost/asm1_php2/danh-sach-khach-hang");
                 }
             } else {
                 $this->data['message'] = '<span class="text-warning">Thông tin khách hàng không thay đổi</span>';
