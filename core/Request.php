@@ -7,7 +7,6 @@ class Request
     private $rules = [], $messages = [], $targetImage, $inputName;
     public $errors;
 
-
     public function getFields() {
         $data = [];
         if ($this->isGet()) {
