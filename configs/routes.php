@@ -15,4 +15,3 @@ $routes['them-san-pham'] = 'Product/add';
 $routes['chi-tiet-san-pham'] = 'Product/detail';
 $routes['cap-nhat-san-pham'] = 'Product/update';
 $routes['xoa-san-pham'] = 'Product/delete';
-
